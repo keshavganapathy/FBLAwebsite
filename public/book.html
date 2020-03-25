@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <link rel="apple-touch-icon" sizes="57x57" href="images/apple-icon-57x57.png">
+  <link rel="apple-touch-icon" sizes="60x60" href="images/apple-icon-60x60.png">
+  <link rel="apple-touch-icon" sizes="72x72" href="images/apple-icon-72x72.png">
+  <link rel="apple-touch-icon" sizes="76x76" href="images/apple-icon-76x76.png">
+  <link rel="apple-touch-icon" sizes="114x114" href="images/apple-icon-114x114.png">
+  <link rel="apple-touch-icon" sizes="120x120" href="images/apple-icon-120x120.png">
+  <link rel="apple-touch-icon" sizes="144x144" href="images/apple-icon-144x144.png">
+  <link rel="apple-touch-icon" sizes="152x152" href="images/apple-icon-152x152.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="images/apple-icon-180x180.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="images/android-icon-192x192.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="images/favicon-96x96.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+  <link rel="manifest" href="manifest.json">
+  <meta name="msapplication-TileColor" content="#ffffff">
+  <meta name="msapplication-TileImage" content="images/ms-icon-144x144.png">
+  <meta name="theme-color" content="#ffffff">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Omega Airlines</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/bulma-calendar.min.css">
+  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+
+  <script src="/__/firebase/7.6.2/firebase-app.js"></script>
+  <script src="/__/firebase/7.6.2/firebase-auth.js"></script>
+  <script src="/__/firebase/7.6.2/firebase-firestore.js"></script>
+  <script src="/__/firebase/init.js"></script>
+  <script src="js/load.js"></script>
+  <script src="js/redirSignin.js"></script>
+
+  <script>
+    var flights = [];
+    var flight;
+    var flightDoc;
+
+    function colorChange(el) {
+      var item = document.getElementsByClassName('is-active button')[0];
+      if (item) {
+        item.classList.remove('is-active');
+      }
+      el.classList.add('is-active');
+    }
+
+    addEventListener("load", function() {
+
+      function parse(data, name) {
+        return `<div class="box">
+          <article class="media">
+            <div class="media-left">
+              <figure class="image is-64x64">
+                <img src="images/omega.png" alt="Omega">
+              </figure>
+            </div>
+            <div class="media-content">
+              <div class="content">
+                <p>
+                  Departure Date: <strong>${data.departureDateTime.toDate().toISOString().substring(0, 10)}</strong>
+                  <br>
+                  Arrival Date: <strong>${data.arrivalDateTime.toDate().toISOString().substring(0, 10)}</strong>
+                  <br>
+                  Flight Number: <strong>#${data.id}</strong>
+                  <br>
+                  Departure Airport: <strong>${data.departureAirport} (${data.departureAirportCode})</strong>
+                  <br>
+                  Departure Time: <strong>${data.departureDateTime.toDate().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</strong>
+                  <br>
+                  Arrival Airport: <strong>${data.arrivalAirport} (${data.arrivalAirportCode})</strong>
+                  <br>
+                  Arrival Time: <strong>${data.arrivalDateTime.toDate().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</strong>
+                  <br>
+                  Seats Remaining: <strong>${data.seatsLeft}</strong>
+                  <br>
+                </p>
+                <div class="field">
+                  <div class="control">
+                    <button ${(data.seatsLeft > 0) ? "" : "disabled "}data-nav="next" onclick="buttonClicked(this)" class="book button is-primary">Book</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </article>
+        </div>`
+      }
+
+      function otherParse(data, firstName, lastName) {
+        return `<div class="box">
+          <article class="media">
+            <div class="media-left">
+              <figure class="image is-64x64">
+                <img src="images/omega.png" alt="Omega">
+              </figure>
+            </div>
+            <div class="media-content">
+              <div class="content">
+                <p>
+                  <strong>${firstName}</strong> <strong>${lastName}</strong>
+                  <br>
+                  <br>
+                  Thank you for flying Omega Airlines! We hope you have a fantastic experience on your flight!
+                  <br>
+                  <i>From Alpha to Omega</i>
+                  <br>
+                  <br>
+                  Departure Date: <strong>${data.departureDateTime.toDate().toISOString().substring(0, 10)}</strong>
+                  <br>
+                  Arrival Date: <strong>${data.arrivalDateTime.toDate().toISOString().substring(0, 10)}</strong>
+                  <br>
+                  Flight Number: <strong>#${data.id}</strong>
+                  <br>
+                  Departure Airport: <strong>${data.departureAirport} (${data.departureAirportCode})</strong>
+                  <br>
+                  Departure Time: <strong>${data.departureDateTime.toDate().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</strong>
+                  <br>
+                  Arrival Airport: <strong>${data.arrivalAirport} (${data.arrivalAirportCode})</strong>
+                  <br>
+                  Arrival Time: <strong>${data.arrivalDateTime.toDate().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</strong>
+                  <br>
+                  Seat Number: <strong>${data.seatNumber}</strong>
+                  <br>
+                  Class: <strong>${data.seatNumber <= 18 ? "Economy" : (data.seatNumber <= 42 ? "Business" : "First")}</strong>
+                  <br>
+                  Boarding Group: <strong>${data.seatNumber <= 18 ? "C" : (data.seatNumber <= 42 ? "B" : "A")}</strong>
+                </p>
+              </div>
+            </div>
+          </article>
+        </div>`
+      }
+
+      document.getElementById("submit").addEventListener("click", function() {
+
+        //var departureTime = (Math.floor(Math.random() * 12) + 1) + ":" + ((15 * Math.floor(Math.random() * 4)) + "").padStart(2, "0") + (Math.floor(Math.random() * 2) ? "AM" : "PM");
+        //var arrivalTime = (Math.floor(Math.random() * 12) + 1) + ":" + ((15 * Math.floor(Math.random() * 4)) + "").padStart(2, "0") + (Math.floor(Math.random() * 2) ? "AM" : "PM");
+        //var gate = ["A", "B", "C"][Math.floor(Math.random() * 3)] + (Math.floor(Math.random() * 12) + 1);
+        var flightRef = db.collection("flights");
+        var queryFlightRef = flightRef;
+        if (document.getElementById("departure").value != "-1") {
+          queryFlightRef = queryFlightRef.where("departureAirportCode", "==", document.getElementById("departure").value);
+        }
+        if (document.getElementById("arrival").value != "-1") {
+          queryFlightRef = queryFlightRef.where("arrivalAirportCode", "==", document.getElementById("arrival").value);
+        }
+        if (document.getElementById("departure_time").value) {
+          queryFlightRef = queryFlightRef.where("departureDateTime", ">=", new Date(Math.max(new Date("2020-03-11").getTime() - 6.048e8, Date.now()))).where("departureDateTime", "<=", new Date(new Date(document.getElementById(
+            "departure_time").value).getTime() + 6.048e8));
+        }
+
+        queryFlightRef.get().then(result => {
+          var code = "";
+          flights = [];
+          for (doc of result.docs) {
+            //console.log(doc.data());
+            flights.push(doc);
+            code += parse(doc.data(), doc._document.proto.name);
+          }
+          document.getElementById("boxes").innerHTML = code;
+          if (result.empty) {
+            document.getElementById("boxes").innerHTML = "There are no matching flights. Please select a different date/airport, or check back later."
+          } else {
+            bulmaSteps.attach();
+          }
+        });
+
+      })
+
+      document.getElementById("submitSeat").addEventListener("click", function() {
+        flight["seatNumber"] = Array.from(document.querySelectorAll('.column > .button')).indexOf(document.getElementsByClassName('is-active button')[0])+1;
+
+        db.doc("users/"+auth.currentUser.uid).get().then(function(nameResult) {
+          var firstName = nameResult.data().first_name;
+          var lastName = nameResult.data().last_name;
+          document.getElementById("otherBoxes").innerHTML = otherParse(flight, firstName, lastName);
+        });
+      });
+
+      document.getElementById("submitConfirm").addEventListener("click", function() {
+        db.doc(flightDoc._document.proto.name.split("/documents/")[1]).update({
+          seatsLeft: firebase.firestore.FieldValue.increment(-1),
+          seatsTaken: firebase.firestore.FieldValue.arrayUnion(flight["seatNumber"])
+        })
+        db.collection("users/" + auth.currentUser.uid + "/flights").add(flight).then(function() {
+          location.href = "trips";
+        }).catch(function(error) {
+          alert(error);
+        })
+      });
+
+    });
+
+    function buttonClicked(button) {
+      flightDoc = flights[Array.from(document.getElementsByClassName('book')).indexOf(button)];
+      flight = flightDoc.data();
+
+      var items = [...document.querySelectorAll('div.column > a.button')];
+      var item = document.getElementsByClassName('is-active button')[0];
+
+      items.forEach(a=>{a.removeAttribute("disabled")});
+      (flight.seatsTaken || []).forEach(a=>{items[a-1].setAttribute("disabled", "disabled");items[a-1].removeAttribute("is-active")});
+      if (button != document.querySelector("[data-nav='next']")) {
+        document.querySelector("[data-nav='next']").click();
+      }
+
+    }
+  </script>
+
+  <style>
+  .modal .datetimepicker {
+		display: none;
+		max-height: 95vh;
+		width: 22rem;
+		max-width: 95vw;
+		overflow-y: auto;
+
+	}
+
+	.datetimepicker.is-active {
+		display: block;
+	}
+</style>
+
+</head>
+
+<body>
+  <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="/">
+        <img src="images/inline-brand.png" alt="Omega">
+      </a>
+
+      <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMenu">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+    <div id="navbarMenu" class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item is-active" href="book">
+          <i class="fas fa-book"></i>
+          <span>&nbspFlights</span>
+        </a>
+        <a class="navbar-item" href="trips">
+          <span class="icon"><i class="fas fa-plane"></i></span>
+          <span>&nbspMy Trips</span>
+        </a>
+        <a class="navbar-item" href="frequent-fliers">
+          <span class="icon"><i class="fas fa-plane"></i></span>
+          <span>&nbspFrequent Fliers</span>
+        </a>
+        <a class="navbar-item" href="apply">
+          <span class="icon"><i class="fas fa-upload"></i></span>
+          <span>&nbspApply</span>
+        </a>
+
+      </div>
+      <div class="navbar-end">
+        <div id="signed_out_buttons" class="navbar-item is-hidden">
+          <h2>
+            Hello, Friend!
+          </h2>&nbsp&nbsp
+          <p class="control">
+            <a id="sign_out" class="button is-palette-dull">
+              <span class="icon">
+                <i class="fas fa-key"></i>
+              </span>
+              <span>
+                Log Out
+              </span>
+            </a>
+          </p>
+        </div>
+        <div id="signed_in_buttons" class="navbar-item is-hidden">
+          <div class="field is-grouped">
+            <p class="control">
+              <a class="bd-tw-button button" href="signup">
+                <span class="icon">
+                  <i class="fas fa-key"></i>
+                </span>
+                <span>
+                  Sign Up
+                </span>
+              </a>
+            </p>
+            <p class="control">
+              <a class="button is-palette-dull" href="signin">
+                <span class="icon">
+                  <i class="fas fa-key"></i>
+                </span>
+                <span>
+                  Log In
+                </span>
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <section class="hero is-light is-large is-bold">
+    <section class="hero-body">
+      <h1 class="title strong content is-title">
+        Book Your Flight
+      </h1>
+    </section>
+  </section>
+  <section class="section">
+    <div class="container">
+      <div class="steps" id="stepsDemo">
+        <div class="step-item is-active" data-step-id="0">
+          <div class="step-marker">1</div>
+          <div class="step-details">
+            <p class="step-title">Select Flight</p>
+          </div>
+        </div>
+        <div class="step-item" data-step-id="1">
+          <div class="step-marker">2</div>
+          <div class="step-details">
+            <p class="step-title">Select Seat</p>
+          </div>
+        </div>
+        <div class="step-item" data-step-id="2">
+          <div class="step-marker">3</div>
+          <div class="step-details">
+            <p class="step-title">Confirm</p>
+          </div>
+        </div>
+
+        <div class="steps-content">
+          <div class="step-content has-text-centered is-active">
+
+            <div class="field is-horizontal">
+              <div class="field-label is-normal">
+                <label class="label">Departure Airport</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control">
+                    <div class="select is-fullwidth"><select id="departure">
+                        <option selected value="-1">Select an airport...</option>
+                        <option value="BWI">Baltimore/Washington International Thurgood Marshall Airport, MD</option>
+                        <option value="PHF">Newport News/Williamsburg International Airport, VA</option>
+                        <option value="RIC">Richmond International Airport, VA</option>
+                        <option value="DCA">Ronald Reagan Washington National Airport, VA</option>
+                        <option value="IAD">Washington Dulles International Airport, VA</option>
+                        <option value="MDT">Harrisburg International Airport, PA</option>
+                        <option value="PHL">Philadelphia International Airport, PA</option>
+                        <option value="PIT">Pittsburgh International Airport, PA</option>
+                        <option value="CKB">North Central West Virginia Airport, WV</option>
+                        <option value="HTS">Tri-State Airport, WV</option>
+                        <option value="ILG">Wilmington Airport, DE</option>
+                      </select></div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <div class="field is-horizontal">
+              <div class="field-label is-normal">
+                <label class="label">Arrival Airport</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control">
+                    <div class="select is-fullwidth"><select id="arrival">
+                        <option selected value="-1">Select an airport...</option>
+                        <option value="BWI">Baltimore/Washington International Thurgood Marshall Airport, MD</option>
+                        <option value="PHF">Newport News/Williamsburg International Airport, VA</option>
+                        <option value="RIC">Richmond International Airport, VA</option>
+                        <option value="DCA">Ronald Reagan Washington National Airport, VA</option>
+                        <option value="IAD">Washington Dulles International Airport, VA</option>
+                        <option value="MDT">Harrisburg International Airport, PA</option>
+                        <option value="PHL">Philadelphia International Airport, PA</option>
+                        <option value="PIT">Pittsburgh International Airport, PA</option>
+                        <option value="CKB">North Central West Virginia Airport, WV</option>
+                        <option value="HTS">Tri-State Airport, WV</option>
+                        <option value="ILG">Wilmington Airport, DE</option>
+                      </select></div>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+            <div class="field is-horizontal">
+              <div class="field-label is-normal">
+                <label class="label">Date</label>
+              </div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control">
+                    <input id="departure_time" type="date">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="field is-horizontal">
+              <div class="field-label"></div>
+              <div class="field-body">
+                <div class="field">
+                  <div class="control">
+                    <input id="submit" type="submit" class="button is-primary" value="Search">
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div style="margin-top: 3rem;"></div>
+            <div id="boxes"></div>
+          </div>
+          <div class="step-content has-text-centered">
+            <h1 class="title">Economy ($50)</h1>
+            <div class="columns">
+              <div class="column">
+                <div class="columns">
+                  <div class="column">
+                    <a onclick="colorChange(this)" class="button is-active">Seat</a>
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                  </div>
+                </div>
+              </div>
+              <div class="column">
+                <div class="columns">
+                  <div class="column">
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="columns">
+              <div class="column">
+                <div class="columns">
+                  <div class="column">
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                  </div>
+                </div>
+              </div>
+              <div class="column">
+                <div class="columns">
+                  <div class="column">
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="columns">
+              <div class="column">
+                <div class="columns">
+                  <div class="column">
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                  </div>
+                </div>
+              </div>
+              <div class="column">
+                <div class="columns">
+                  <div class="column">
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <h1 class="title">Business ($150)</h1>
+            <div class="columns">
+              <div class="column">
+                <div class="columns">
+                  <div class="column">
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                  </div>
+                </div>
+              </div>
+              <div class="column">
+                <div class="columns">
+                  <div class="column">
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="columns">
+              <div class="column">
+                <div class="columns">
+                  <div class="column">
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                  </div>
+                </div>
+              </div>
+              <div class="column">
+                <div class="columns">
+                  <div class="column">
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="columns">
+              <div class="column">
+                <div class="columns">
+                  <div class="column">
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                  </div>
+                </div>
+              </div>
+              <div class="column">
+                <div class="columns">
+                  <div class="column">
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="columns">
+              <div class="column">
+                <div class="columns">
+                  <div class="column">
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                  </div>
+                </div>
+              </div>
+              <div class="column">
+                <div class="columns">
+                  <div class="column">
+                    <a onclick=colorChange(this) class="button">Seat</a>
+                    <a onclick=colorChange(this) class="button">Seat</a>
+                    <a onclick=colorChange(this) class="button">Seat</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <h1 class="title">First ($300)</h1>
+            <div class="columns">
+              <div class="column">
+                <div class="columns">
+                  <div class="column">
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                  </div>
+                </div>
+              </div>
+              <div class="column">
+                <div class="columns">
+                  <div class="column">
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                    <a onclick="colorChange(this)" class="button">Seat</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="steps-actions">
+              <div class="steps-action"></div>
+              <div class="steps-action">
+                <a data-nav="previous" class="button is-light">Back</a>
+              </div>
+              <div class="steps-action">
+                <a data-nav="next" id="submitSeat" class="button is-primary">Book</a>
+              </div>
+              <div class="steps-action"></div>
+            </div>
+          </div>
+          <div class="step-content has-text-centered">
+            <h2 class="title is-medium">Please confirm the details below:</h2>
+            <section class="section">
+              <div class="boxes" id="otherBoxes">
+                <div class="box">
+                  <article class="media">
+                    <div class="media-left">
+                      <figure class="image is-64x64">
+                        <img src="images/omega.png" alt="Omega">
+                      </figure>
+                    </div>
+                    <div class="media-content">
+                      <div class="content">
+                        <p>
+                          <strong></strong> <strong></strong>
+                          <br>
+                          <br>
+                          Thank you for flying Omega Airlines! We hope you have a fantastic experience on your flight!
+                          <br>
+                          <i>From Alpha to Omega</i>
+                          <br>
+                          <br>
+                          Departure Date: <strong></strong>
+                          <br>
+                          Arrival Date: <strong></strong>
+                          <br>
+                          Flight Number: <strong></strong>
+                          <br>
+                          Departure Airport: <strong></strong>
+                          <br>
+                          Departure Time: <strong></strong>
+                          <br>
+                          Arrival Airport: <strong></strong>
+                          <br>
+                          Arrival Time: <strong></strong>
+                          <br>
+                          Seat Number: <strong></strong>
+                          <br>
+                          Class: <strong></strong>
+                          <br>
+                          Boarding Group: <strong></strong>
+                        </p>
+                      </div>
+                    </div>
+                  </article>
+                </div>
+              </div>
+            </section>
+            <div class="level">
+              <div class="level-left">
+                <div class="level-item">
+                  <span class="title is-4 is-danger">NOTE: You will be billed for this flight upon booking.</span>
+                </div>
+                <div class="level-item">
+                  <section class="section">
+                    <div class="steps-actions">
+                      <div class="steps-action"></div>
+                      <div class="steps-action">
+                        <a data-nav="previous" onclick="document.querySelector('[data-nav=\'previous\']').click()" class="button is-light">Cancel</a>
+                      </div>
+                      <div class="steps-action">
+                        <a id="submitConfirm" class="button is-primary">Confirm</a>
+                      </div>
+                      <div class="steps-action"></div>
+                    </div>
+                  </section>
+                </div>
+                <div class="level-item">
+                  <span class="title is-2">Thank you for flying Omega Air.</span>
+                </div>
+              </div>
+          </div>
+
+      </div>
+    </div>
+  </section>
+  <div class="container">
+
+  </div>
+  <section class="container has-text-centered">
+    <img src="images/book.jpg" style="max-height: 300px" class="is-inline-block">
+  </section>
+  <footer class="footer is-dark">
+    <div class="content has-text-centered is-dark">
+      <a href="https://www.instagram.com">
+        <span class="icon is-large has-text-primary">
+          <i class="fab fa-instagram fa-3x"></i>
+        </span>
+      </a>&nbsp;
+      <a href="https://www.twitter.com">
+        <span class="icon is-large has-text-primary">
+          <i class="fab fa-twitter fa-3x"></i>
+        </span>
+      </a>&nbsp;
+      <a href="https://www.facebook.com">
+        <span class="icon is-large has-text-primary">
+          <i class="fab fa-facebook fa-3x"></i>
+        </span></a>&nbsp;
+      <a href="mailto:customerservice@airomega.web.app">
+        <span class="icon is-large has-text-primary">
+          <i class="fas fa-envelope fa-3x"></i>
+        </span>
+      </a>
+      <p>
+        Omega Airlines by Connor Pymm, Adam Goldstein, and Keshav Ganapathy.
+      </p>
+      <p>
+        <a href="credits">Credits</a>
+      </p>
+
+      </p>
+    </div>
+  </footer>
+  <script src="js/bulma-calendar.min.js"></script>
+  <script src="js/bulma-steps.min.js"></script>
+  <script>
+    var calendars = bulmaCalendar.attach('[type="date"]', {
+      startDate: new Date()
+    });
+    bulmaSteps.attach();
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="apple-touch-icon" sizes="57x57" href="images/apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="images/apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="images/apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="images/apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="images/apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="images/apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="images/apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="images/apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="images/apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="images/android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="images/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+<link rel="manifest" href="manifest.json">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="images/ms-icon-144x144.png">
+<meta name="theme-color" content="#ffffff">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Omega Airlines</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+
+<script src="/__/firebase/7.6.2/firebase-app.js"></script>
+<script src="/__/firebase/7.6.2/firebase-auth.js"></script>
+<script src="/__/firebase/7.6.2/firebase-firestore.js"></script>
+<script src="/__/firebase/init.js"></script>
+<script src="js/load.js"></script>
+</head>
+<body>
+  <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="/">
+        <img src="images/inline-brand.png" alt="Omega">
+      </a>
+
+      <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMenu">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+    <div id="navbarMenu" class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="book">
+          <i class="fas fa-book"></i>
+          <span>&nbspFlights</span>
+        </a>
+        <a class="navbar-item" href="trips">
+          <span class="icon"><i class="fas fa-plane"></i></span>
+          <span>&nbspMy Trips</span>
+        </a>
+        <a class="navbar-item is-active" href="frequent-fliers">
+          <span class="icon"><i class="fas fa-plane"></i></span>
+          <span>&nbspFrequent Fliers</span>
+        </a>
+        <a class="navbar-item" href="apply">
+          <span class="icon"><i class="fas fa-upload"></i></span>
+          <span>&nbspApply</span>
+        </a>
+
+      </div>
+      <div class="navbar-end">
+<div id="signed_out_buttons" class="navbar-item is-hidden">
+  <h2>
+    Hello, Friend!
+  </h2>&nbsp&nbsp
+  <p class="control">
+    <a id="sign_out" class="button is-palette-dull">
+      <span class="icon">
+        <i class="fas fa-key"></i>
+      </span>
+      <span>
+        Log Out
+      </span>
+    </a>
+  </p>
+</div>
+        <div id="signed_in_buttons" class="navbar-item is-hidden">
+          <div class="field is-grouped">
+            <p class="control">
+              <a class="bd-tw-button button" href="signup">
+                <span class="icon">
+                  <i class="fas fa-key"></i>
+                </span>
+                <span>
+                  Sign Up
+                </span>
+              </a>
+            </p>
+            <p class="control">
+              <a class="button is-palette-dull" href="signin">
+                <span class="icon">
+                  <i class="fas fa-key"></i>
+                </span>
+                <span>
+                  Log In
+                </span>
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <section class="hero is-light is-large is-bold">
+    <section class="hero-body">
+      <h1 class="title strong content is-title">
+        FBLA 2020 Omega Airlines Documentation
+      </h1>
+    </section>
+  </section>
+  <body>
+    <section class="section">
+      <div class="container">
+        <h2 class="subtitle">
+          1) Apply for a Job Image - https://www.freepik.com/ -
+          https://www.freepik.com/free-vector/office-concept-illustration_6610842.htm#page=1&query=employees&position=9
+        </h2>
+        <h2 class="subtitle">
+          2) Regular Expression Library - http://regexlib.com/ - http://regexlib.com/REDetails.aspx?regexp_id=61&AspxAutoDetectCookieSupport=1
+        </h2>
+        <h2 class="subtitle">
+          3) Globe/Map Resource - https://www.maptiler.com/ - https://www.maptiler.com/
+        </h2>
+        <h2 class="subtitle">
+          4) Globe/Map Resource - https://www.openstreetmap.org/#map=4/38.01/-95.84 - https://www.openstreetmap.org/#map=4/38.01/-95.84
+        </h2>
+        <h2 class="subtitle">
+          5) Globe/Map Resource - https://leafletjs.com/ - https://raw.githack.com/Leaflet/Leaflet.TileLayer.NoGap/master/L.TileLayer.NoGap.js
+        </h2>
+        <h2 class="subtitle">
+          6) Global/Map - https://www.webglearth.com/ - https://www.webglearth.com/
+        </h2>
+        <h2 class="subtitle">
+          7) Bulma (Front End Design CSS, Javascript) - https://bulma.io/ - https://bulma.io/
+        </h2>
+        <h2 class="subtitle">
+          8) Font Awesome - https://fontawesome.com/ - https://fontawesome.com/
+        </h2>
+        <h2 class="subtitle">
+          9) Color Hunt(Color Scheme) - https://colorhunt.co/ - https://colorhunt.co/palette/165764
+        </h2>
+        <h2 class="subtitle">
+          10) Firebase (Back End) - https://firebase.google.com/ - https://firebase.google.com/
+        </h2>
+        <h2 class="subtitle">
+          11) Book Image - https://www.freepik.com/ - https://www.freepik.com/free-vector/airport-concept-illustration-man-character-with-suitcase-ticket_6012185.htm#page=1&query=airplane%20ticket&position=5
+        </h2>
+        <h2 class="subtitle">
+          12) Bulma Information - https://wikiki.github.io/ - https://wikiki.github.io/components/steps/
+        </h2>
+        <h2 class="subtitle">
+          13) Bulma Calendar Documentation - https://creativebulma.net/ - https://creativebulma.net/product/calendar/demo
+        </h2>
+        <h2 class="subtitle">
+          14) Calculator to get Flight Times - https://flighttime-calculator.com/ - https://flighttime-calculator.com/
+        </h2>
+        <h2 class="subtitle">
+          15) Airplane Image - https://pixabay.com/- https://pixabay.com/vectors/airplane-plane-jumbo-boeing-travel-303639/
+        </h2>
+      </div>
+    </section>
+  </body>
+  <footer class="footer is-dark">
+  <div class="content has-text-centered is-dark">
+  <a href="https://www.instagram.com">
+    <span class="icon is-large has-text-primary">
+      <i class="fab fa-instagram fa-3x"></i>
+    </span>
+  </a>&nbsp;
+  <a href="https://www.twitter.com">
+    <span class="icon is-large has-text-primary">
+      <i class="fab fa-twitter fa-3x"></i>
+    </span>
+  </a>&nbsp;
+  <a href="https://www.facebook.com">
+    <span class="icon is-large has-text-primary">
+      <i class="fab fa-facebook fa-3x"></i>
+    </span></a>&nbsp;
+  <a href="mailto:customerservice@airomega.web.app">
+    <span class="icon is-large has-text-primary">
+      <i class="fas fa-envelope fa-3x"></i>
+    </span>
+  </a>
+    <p>
+      Omega Airlines by Connor Pymm, Adam Goldstein, and Keshav Ganapathy.
+</p>
+<p>
+<a href="credits">Credits</a>
+</p>
+
+    </p>
+  </div>
+</footer>
+</body>
+</html>

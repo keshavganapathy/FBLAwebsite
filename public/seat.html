@@ -1,0 +1,356 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="apple-touch-icon" sizes="57x57" href="images/apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="images/apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="images/apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="images/apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="images/apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="images/apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="images/apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="images/apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="images/apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="images/android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="images/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+<link rel="manifest" href="manifest.json">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="images/ms-icon-144x144.png">
+<meta name="theme-color" content="#ffffff">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Omega Airlines</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+
+<script src="/__/firebase/7.6.2/firebase-app.js"></script>
+<script src="/__/firebase/7.6.2/firebase-auth.js"></script>
+<script src="/__/firebase/7.6.2/firebase-firestore.js"></script>
+<script src="/__/firebase/init.js"></script>
+<script src="js/load.js"></script>
+  <script>
+
+  function colorChange(el) {
+    var item = document.getElementsByClassName('is-active button')[0];
+    if (item) {
+      item.classList.remove('is-active');
+    }
+    el.classList.add('is-active');
+  }
+
+  function submit() {
+    var item = document.getElementsByClassName('is-active button')[0];
+    db.collection("users/"+auth.currentUser.uid+"/flights").orderBy("created", "desc").get().then(function(query) {
+      return db.doc(query.docs[0]._document.proto.name.split("/documents/")[1]).update({
+        seatNumber: Array.from(document.querySelectorAll('.column > .button')).indexOf(item)+1
+      })
+    }).then(function() {
+      location.href = "trips";
+    })
+  }
+
+  addEventListener("load", function() {
+    document.getElementById("submit").addEventListener("click", submit)
+  });
+
+  </script>
+
+</head>
+<body>
+  <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="/">
+        <img src="images/inline-brand.png" alt="Omega">
+      </a>
+
+      <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMenu">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+    <div id="navbarMenu" class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item is-active" href="book">
+          <i class="fas fa-book"></i>
+          <span>&nbspFlights</span>
+        </a>
+        <a class="navbar-item" href="trips">
+          <span class="icon"><i class="fas fa-plane"></i></span>
+          <span>&nbspMy Trips</span>
+        </a>
+        <a class="navbar-item" href="schedules">
+          <span class="icon"><i class="fas fa-plane"></i></span>
+          <span>&nbspFlight Schedules</span>
+        </a>
+        <a class="navbar-item" href="frequent-fliers">
+          <span class="icon"><i class="fas fa-plane"></i></span>
+          <span>&nbspFrequent Fliers</span>
+        </a>
+        <a class="navbar-item" href="apply">
+          <span class="icon"><i class="fas fa-upload"></i></span>
+          <span>&nbspApply</span>
+        </a>
+
+      </div>
+      <div class="navbar-end">
+<div id="signed_out_buttons" class="navbar-item is-hidden">
+  <h2>
+    Hello, Friend!
+  </h2>&nbsp&nbsp
+  <p class="control">
+    <a id="sign_out" class="button is-palette-dull">
+      <span class="icon">
+        <i class="fas fa-key"></i>
+      </span>
+      <span>
+        Log Out
+      </span>
+    </a>
+  </p>
+</div>
+        <div id="signed_in_buttons" class="navbar-item is-hidden">
+          <div class="field is-grouped">
+            <p class="control">
+              <a class="bd-tw-button button" href="signup">
+                <span class="icon">
+                  <i class="fas fa-key"></i>
+                </span>
+                <span>
+                  Sign Up
+                </span>
+              </a>
+            </p>
+            <p class="control">
+              <a class="button is-palette-dull" href="signin">
+                <span class="icon">
+                  <i class="fas fa-key"></i>
+                </span>
+                <span>
+                  Log In
+                </span>
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <section class="hero is-light is-large is-bold">
+    <section class="hero-body">
+      <h1 class="title strong content is-title">
+        Select Your Seat
+      </h1>
+    </section>
+  </section>
+  <section class="section">
+    <div class="container">
+      <h1 class="title">Economy ($50)</h1>
+      <div class="columns">
+        <div class="column">
+          <div class="columns">
+            <div class="column">
+              <a onclick="colorChange(this)" class="button is-active">Seat</a>
+              <a onclick="colorChange(this)" class="button">Seat</a>
+              <a onclick="colorChange(this)" class="button">Seat</a>
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="columns">
+            <div class="column">
+              <a onclick="colorChange(this)" class="button">Seat</a>
+              <a onclick="colorChange(this)" class="button">Seat</a>
+              <a onclick="colorChange(this)" class="button">Seat</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="columns">
+        <div class="column">
+          <div class="columns">
+            <div class="column">
+              <a onclick="colorChange(this)" class="button">Seat</a>
+              <a onclick="colorChange(this)" class="button">Seat</a>
+              <a onclick="colorChange(this)" class="button">Seat</a>
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="columns">
+            <div class="column">
+              <a onclick="colorChange(this)" class="button">Seat</a>
+              <a onclick="colorChange(this)" class="button">Seat</a>
+              <a onclick="colorChange(this)" class="button">Seat</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="columns">
+        <div class="column">
+          <div class="columns">
+            <div class="column">
+              <a onclick="colorChange(this)" class="button">Seat</a>
+              <a onclick="colorChange(this)" class="button">Seat</a>
+              <a onclick="colorChange(this)" class="button">Seat</a>
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="columns">
+            <div class="column">
+              <a onclick="colorChange(this)" class="button">Seat</a>
+              <a onclick="colorChange(this)" class="button">Seat</a>
+              <a onclick="colorChange(this)" class="button">Seat</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h1 class="title">Business ($150)</h1>
+      <div class="columns">
+        <div class="column">
+          <div class="columns">
+            <div class="column">
+              <a onclick="colorChange(this)" class="button">Seat</a>
+              <a onclick="colorChange(this)" class="button">Seat</a>
+              <a onclick="colorChange(this)" class="button">Seat</a>
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="columns">
+            <div class="column">
+              <a onclick="colorChange(this)" class="button">Seat</a>
+              <a onclick="colorChange(this)" class="button">Seat</a>
+              <a onclick="colorChange(this)" class="button">Seat</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="columns">
+        <div class="column">
+          <div class="columns">
+            <div class="column">
+              <a onclick="colorChange(this)" class="button">Seat</a>
+              <a onclick="colorChange(this)" class="button">Seat</a>
+              <a onclick="colorChange(this)" class="button">Seat</a>
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="columns">
+            <div class="column">
+              <a onclick="colorChange(this)" class="button">Seat</a>
+              <a onclick="colorChange(this)" class="button">Seat</a>
+              <a onclick="colorChange(this)" class="button">Seat</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="columns">
+        <div class="column">
+          <div class="columns">
+            <div class="column">
+              <a onclick="colorChange(this)" class="button">Seat</a>
+              <a onclick="colorChange(this)" class="button">Seat</a>
+              <a onclick="colorChange(this)" class="button">Seat</a>
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="columns">
+            <div class="column">
+              <a onclick="colorChange(this)" class="button">Seat</a>
+              <a onclick="colorChange(this)" class="button">Seat</a>
+              <a onclick="colorChange(this)" class="button">Seat</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="columns">
+        <div class="column">
+          <div class="columns">
+            <div class="column">
+              <a onclick="colorChange(this)" class="button">Seat</a>
+              <a onclick="colorChange(this)" class="button">Seat</a>
+              <a onclick="colorChange(this)" class="button">Seat</a>
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="columns">
+            <div class="column">
+              <a onclick=colorChange(this) class="button">Seat</a>
+              <a onclick=colorChange(this) class="button">Seat</a>
+              <a onclick=colorChange(this) class="button">Seat</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <h1 class="title">First ($300)</h1>
+      <div class="columns">
+        <div class="column">
+          <div class="columns">
+            <div class="column">
+              <a onclick="colorChange(this)" class="button">Seat</a>
+              <a onclick="colorChange(this)" class="button">Seat</a>
+              <a onclick="colorChange(this)" class="button">Seat</a>
+            </div>
+          </div>
+        </div>
+        <div class="column">
+          <div class="columns">
+            <div class="column">
+              <a onclick="colorChange(this)" class="button">Seat</a>
+              <a onclick="colorChange(this)" class="button">Seat</a>
+              <a onclick="colorChange(this)" class="button">Seat</a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="level">
+        <div class="level-left">
+          <div class="level-item">
+            <a id="submit" class="button is-link">Book</a>
+          </div>
+          <div class="level-item">
+            <span class="title is-4">NOTE: You will be billed for this flight upon booking.</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+  <footer class="footer is-dark">
+  <div class="content has-text-centered is-dark">
+  <a href="https://www.instagram.com">
+    <span class="icon is-large has-text-primary">
+      <i class="fab fa-instagram fa-3x"></i>
+    </span>
+  </a>&nbsp;
+  <a href="https://www.twitter.com">
+    <span class="icon is-large has-text-primary">
+      <i class="fab fa-twitter fa-3x"></i>
+    </span>
+  </a>&nbsp;
+  <a href="https://www.facebook.com">
+    <span class="icon is-large has-text-primary">
+      <i class="fab fa-facebook fa-3x"></i>
+    </span></a>&nbsp;
+  <a href="mailto:customerservice@airomega.web.app">
+    <span class="icon is-large has-text-primary">
+      <i class="fas fa-envelope fa-3x"></i>
+    </span>
+  </a>
+    <p>
+      Omega Airlines by Connor Pymm, Adam Goldstein, and Keshav Ganapathy.
+</p>
+<p>
+<a href="credits">Credits</a>
+</p>
+
+  </div>
+</footer>
+</body>
+</html>

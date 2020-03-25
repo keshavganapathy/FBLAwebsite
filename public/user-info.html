@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<link rel="apple-touch-icon" sizes="57x57" href="images/apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="images/apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="images/apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="images/apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="images/apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="images/apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="images/apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="images/apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="images/apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="images/android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="images/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+<link rel="manifest" href="manifest.json">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="images/ms-icon-144x144.png">
+<meta name="theme-color" content="#ffffff">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Omega Airlines</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+
+  <script src="/__/firebase/7.6.2/firebase-app.js"></script>
+  <script src="/__/firebase/7.6.2/firebase-auth.js"></script>
+  <script src="/__/firebase/7.6.2/firebase-firestore.js"></script>
+  <script src="/__/firebase/init.js"></script>
+  <script src="js/load.js"></script>
+  <script src="js/redirSignin.js"></script>
+
+
+  <script>
+
+var greeting, sign_up
+
+  var prefix,
+    first_name,
+    last_name,
+    phone,
+    address,
+    city,
+    state,
+    country,
+    password,
+    confirm_password,
+    create,
+    auth,
+    db;
+
+    function checkValid() {
+      var valid = true;
+
+      if (prefix.value == "") {
+        prefix.classList.add("is-danger");
+        valid = false;
+      } else {
+        prefix.classList.remove("is-danger");
+      }
+
+      if (first_name.value == "") {
+        first_name.classList.add("is-danger");
+        valid = false;
+      } else {
+        first_name.classList.remove("is-danger");
+      }
+
+      if (last_name.value == "") {
+        last_name.classList.add("is-danger");
+        valid = false;
+      } else {
+        last_name.classList.remove("is-danger");
+      }
+
+      if (phone.value.match(/((\(\d{3}\)?)|(\d{3}))([\s-./]?)(\d{3})([\s-./]?)(\d{4})/)) {
+        phone.classList.remove("is-danger");
+      } else {
+        phone.classList.add("is-danger");
+        valid = false;
+      }
+
+      if (address.value == "") {
+        address.classList.add("is-danger");
+        valid = false;
+      } else {
+        address.classList.remove("is-danger");
+      }
+
+      if (city.value == "") {
+        city.classList.add("is-danger");
+        valid = false;
+      } else {
+        city.classList.remove("is-danger");
+      }
+
+      if (state.value == "") {
+        state.classList.add("is-danger");
+        valid = false;
+      } else {
+        state.classList.remove("is-danger");
+      }
+
+      if (country.value == "") {
+        country.classList.add("is-danger");
+        valid = false;
+      } else {
+        country.classList.remove("is-danger");
+      }
+
+      if (valid) {
+        create.disabled = false;
+      } else {
+        create.disabled = true;
+      }
+
+    }
+
+    function createAccount() {
+
+      db.collection("users").doc(auth.currentUser.uid).set({
+          prefix: prefix.value,
+          first_name: first_name.value,
+          last_name: last_name.value,
+          phone: phone.value,
+          address: address.value,
+          city: city.value,
+          state: state.value,
+          country: country.value
+        }).then(function() {
+          location.href = "/trips";
+        }).catch(function(error) {
+          alert(error.message)
+        })
+
+    }
+
+    addEventListener("load", function() {
+
+      prefix = document.getElementById("prefix");
+      first_name = document.getElementById("first_name");
+      last_name = document.getElementById("last_name");
+      phone = document.getElementById("phone");
+      address = document.getElementById("address");
+      city = document.getElementById("city");
+      state = document.getElementById("state");
+      country = document.getElementById("country");
+      create = document.getElementById("create");
+      auth = firebase.auth();
+      db = firebase.firestore();
+
+      prefix.addEventListener("input", checkValid);
+      first_name.addEventListener("input", checkValid);
+      last_name.addEventListener("input", checkValid);
+      phone.addEventListener("input", checkValid);
+      address.addEventListener("input", checkValid);
+      city.addEventListener("input", checkValid);
+      state.addEventListener("input", checkValid);
+      country.addEventListener("input", checkValid);
+
+      document.getElementById("create").addEventListener("click", createAccount);
+
+      checkValid();
+
+    });
+  </script>
+
+</head>
+
+<body>
+  <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="/">
+        <img src="images/inline-brand.png" alt="Omega">
+      </a>
+
+      <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMenu">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+    <div id="navbarMenu" class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="book">
+          <i class="fas fa-book"></i>
+          <span>&nbspFlights</span>
+        </a>
+        <a class="navbar-item" href="trips">
+          <span class="icon"><i class="fas fa-plane"></i></span>
+          <span>&nbspMy Trips</span>
+        </a>
+        <a class="navbar-item" href="frequent-fliers">
+          <span class="icon"><i class="fas fa-plane"></i></span>
+          <span>&nbspFrequent Fliers</span>
+        </a>
+        <a class="navbar-item" href="apply">
+          <span class="icon"><i class="fas fa-upload"></i></span>
+          <span>&nbspApply</span>
+        </a>
+
+      </div>
+      <div class="navbar-end">
+        <div id="signed_out_buttons" class="navbar-item is-hidden">
+          <h2>
+            Hello, Friend!
+          </h2>&nbsp&nbsp
+          <p class="control">
+            <a id="sign_out" class="button is-palette-dull">
+              <span class="icon">
+                <i class="fas fa-key"></i>
+              </span>
+              <span>
+                Log Out
+              </span>
+            </a>
+          </p>
+        </div>
+        <div id="signed_in_buttons" class="navbar-item is-hidden">
+          <div class="field is-grouped">
+            <p class="control">
+              <a class="bd-tw-button button" href="signup">
+                <span class="icon">
+                  <i class="fas fa-key"></i>
+                </span>
+                <span>
+                  Sign Up
+                </span>
+              </a>
+            </p>
+            <p class="control">
+              <a class="button is-palette-dull" href="signin">
+                <span class="icon">
+                  <i class="fas fa-key"></i>
+                </span>
+                <span>
+                  Log In
+                </span>
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <section class="hero is-light is-large is-bold">
+    <section class="hero-body">
+      <h1 class="title strong content is-title">
+        Welcome to the Omega Family!
+      </h1>
+    </section>
+  </section>
+  <section class="section">
+    <div class="container">
+      <h2 class="subtitle">Basic Information</h2>
+      <div class="field">
+        <div class="control">
+          <input required id="prefix" class="input is-info" type="text" placeholder="Prefix" width="120">
+        </div>
+      </div>
+      <div class="field">
+        <div class="control">
+          <input required id="first_name" class="input is-info" type="text" placeholder="First Name" width="120">
+        </div>
+      </div>
+      <div class="field">
+        <div class="control">
+          <input required id="last_name" class="input is-info" type="text" placeholder="Last Name">
+        </div>
+      </div>
+      <div class="is-divider" data-content=""></div>
+      <h2 class="subtitle">Contact Information</h2>
+      <div class="field">
+        <div class="control">
+          <input required id="phone" class="input is-info" type="text" placeholder="Phone Number">
+        </div>
+      </div>
+      <div class="field">
+        <div class="control">
+          <input required id="address" class="input is-info" type="text" placeholder="Home Address 1">
+        </div>
+      </div>
+      <div class="field">
+        <div class="control">
+          <input required id="city" class="input is-info" type="text" placeholder="City">
+        </div>
+      </div>
+      <div class="field">
+        <div class="control">
+          <input required id="state" class="input is-info" type="text" placeholder="State">
+        </div>
+      </div>
+      <div class="field">
+        <div class="control">
+          <input required id="country" class="input is-info" type="text" placeholder="Country">
+        </div>
+      </div>
+      <div class="field is-grouped">
+        <div class="control">
+          <button disabled id="create" class="button is-link">
+            Save Information
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+  <footer class="footer is-dark">
+    <div class="content has-text-centered is-dark">
+      <a href="https://www.instagram.com">
+        <span class="icon is-large has-text-primary">
+          <i class="fab fa-instagram fa-3x"></i>
+        </span>
+      </a>&nbsp;
+      <a href="https://www.twitter.com">
+        <span class="icon is-large has-text-primary">
+          <i class="fab fa-twitter fa-3x"></i>
+        </span>
+      </a>&nbsp;
+      <a href="https://www.facebook.com">
+        <span class="icon is-large has-text-primary">
+          <i class="fab fa-facebook fa-3x"></i>
+        </span></a>&nbsp;
+      <a href="mailto:customerservice@airomega.web.app">
+        <span class="icon is-large has-text-primary">
+          <i class="fas fa-envelope fa-3x"></i>
+        </span>
+      </a>
+      <p>
+        Omega Airlines by Connor Pymm, Adam Goldstein, and Keshav Ganapathy.
+      </p>
+      <p>
+        <a href="credits">Credits</a>
+      </p>
+
+      </p>
+    </div>
+  </footer>
+</body>
+
+</html>

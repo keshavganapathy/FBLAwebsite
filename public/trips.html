@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<link rel="apple-touch-icon" sizes="57x57" href="images/apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="images/apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="images/apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="images/apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="images/apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="images/apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="images/apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="images/apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="images/apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="images/android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="images/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+<link rel="manifest" href="manifest.json">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="images/ms-icon-144x144.png">
+<meta name="theme-color" content="#ffffff">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Omega Airlines</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+
+<script src="/__/firebase/7.6.2/firebase-app.js"></script>
+<script src="/__/firebase/7.6.2/firebase-auth.js"></script>
+<script src="/__/firebase/7.6.2/firebase-firestore.js"></script>
+<script src="/__/firebase/init.js"></script>
+<script src="js/load.js"></script>
+<script src="js/redirSignin.js"></script>
+</head>
+
+<script>
+function parse(data, name, firstName, lastName) {
+  return `<div class="box">
+    <article class="media">
+      <div class="media-left">
+        <figure class="image is-64x64">
+          <img src="images/omega.png" alt="Omega">
+        </figure>
+      </div>
+      <div class="media-content">
+        <div class="content">
+          <p>
+            <strong>${firstName}</strong> <strong>${lastName}</strong>
+            <br>
+            <br>
+            Thank you for flying Omega Airlines! We hope you have a fantastic experience on your flight!
+            <br>
+            <i>From Alpha to Omega</i>
+            <br>
+            <br>
+            Departure Date: <strong>${data.departureDateTime.toDate().toISOString().substring(0, 10)}</strong>
+            <br>
+            Arrival Date: <strong>${data.arrivalDateTime.toDate().toISOString().substring(0, 10)}</strong>
+            <br>
+            Flight Number: <strong>#${data.id}</strong>
+            <br>
+            Departure Airport: <strong>${data.departureAirport} (${data.departureAirportCode})</strong>
+            <br>
+            Departure Time: <strong>${data.departureDateTime.toDate().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</strong>
+            <br>
+            Arrival Airport: <strong>${data.arrivalAirport} (${data.arrivalAirportCode})</strong>
+            <br>
+            Arrival Time: <strong>${data.arrivalDateTime.toDate().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</strong>
+            <br>
+            Gate: <strong>${data.gate}</strong>
+            <br>
+            Seat Number: <strong>${data.seatNumber}</strong>
+            <br>
+            Class: <strong>${data.seatNumber <= 18 ? "Economy" : (data.seatNumber <= 42 ? "Business" : "First")}</strong>
+            <br>
+            Boarding Group: <strong>${data.seatNumber <= 18 ? "C" : (data.seatNumber <= 42 ? "B" : "A")}</strong>
+            <br>
+            <figure class="image is-128x128 is-marginless"><img src="https://chart.googleapis.com/chart?cht=qr&chs=128x128&chld=H|0&chl=${name}" alt="QR Code; Ask an associate for assistance if needed."></figure>
+          </p>
+        </div>
+      </div>
+    </article>
+  </div>`
+}
+
+auth.onAuthStateChanged(function(user) {
+
+  db.collection("users/"+auth.currentUser.uid+"/flights").orderBy("departureDateTime").get().then(result=>{
+    db.doc("users/"+auth.currentUser.uid).get().then(function(nameResult) {
+      var firstName = nameResult.data().first_name;
+      var lastName = nameResult.data().last_name;
+
+      code = "";
+      for (doc of result.docs) {
+        code += parse(doc.data(), doc._document.proto.name, firstName, lastName);
+      }
+      document.getElementById("boxes").innerHTML = code;
+      if (result.empty) {
+        document.getElementById("boxes").innerHTML = "You have not scheduled any flights."
+      }
+    });
+  })
+});
+</script>
+
+<body>
+  <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="/">
+        <img src="images/inline-brand.png" alt="Omega">
+      </a>
+
+      <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMenu">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+    <div id="navbarMenu" class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="book">
+          <i class="fas fa-book"></i>
+          <span>&nbspFlights</span>
+        </a>
+        <a class="navbar-item is-active" href="trips">
+          <span class="icon"><i class="fas fa-plane"></i></span>
+          <span>&nbspMy Trips</span>
+        </a>
+        <a class="navbar-item" href="frequent-fliers">
+          <span class="icon"><i class="fas fa-plane"></i></span>
+          <span>&nbspFrequent Fliers</span>
+        </a>
+        <a class="navbar-item" href="apply">
+          <span class="icon"><i class="fas fa-upload"></i></span>
+          <span>&nbspApply</span>
+        </a>
+
+      </div>
+      <div class="navbar-end">
+<div id="signed_out_buttons" class="navbar-item is-hidden">
+  <h2>
+    Hello, Friend!
+  </h2>&nbsp&nbsp
+  <p class="control">
+    <a id="sign_out" class="button is-palette-dull">
+      <span class="icon">
+        <i class="fas fa-key"></i>
+      </span>
+      <span>
+        Log Out
+      </span>
+    </a>
+  </p>
+</div>
+        <div id="signed_in_buttons" class="navbar-item is-hidden">
+          <div class="field is-grouped">
+            <p class="control">
+              <a class="bd-tw-button button" href="signup">
+                <span class="icon">
+                  <i class="fas fa-key"></i>
+                </span>
+                <span>
+                  Sign Up
+                </span>
+              </a>
+            </p>
+            <p class="control">
+              <a class="button is-palette-dull" href="signin">
+                <span class="icon">
+                  <i class="fas fa-key"></i>
+                </span>
+                <span>
+                  Log In
+                </span>
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <section class="hero is-light is-large is-bold">
+    <section class="hero-body">
+      <h1 class="title strong content is-title">
+        Your Trips
+      </h1>
+    </section>
+  </section>
+  <section class="section">
+    <div id="boxes" class="container">
+
+    </div>
+  </section>
+  <footer class="footer is-dark">
+    <div class="content has-text-centered is-dark">
+  <a href="https://www.instagram.com">
+    <span class="icon is-large has-text-primary">
+      <i class="fab fa-instagram fa-3x"></i>
+    </span>
+  </a>&nbsp;
+  <a href="https://www.twitter.com">
+    <span class="icon is-large has-text-primary">
+      <i class="fab fa-twitter fa-3x"></i>
+    </span>
+  </a>&nbsp;
+  <a href="https://www.facebook.com">
+    <span class="icon is-large has-text-primary">
+      <i class="fab fa-facebook fa-3x"></i>
+    </span></a>&nbsp;
+  <a href="mailto:customerservice@airomega.web.app">
+    <span class="icon is-large has-text-primary">
+      <i class="fas fa-envelope fa-3x"></i>
+    </span>
+  </a>
+      <p>
+        Omega Airlines by Connor Pymm, Adam Goldstein, and Keshav Ganapathy.
+</p>
+<p>
+<a href="credits">Credits</a>
+</p>
+
+      </p>
+    </div>
+  </footer>
+</body>
+
+</html>

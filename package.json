@@ -1,0 +1,31 @@
+{
+  "name": "fbla",
+  "version": "1.0.0",
+  "description": "AirOmega website",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "css-build": "node-sass --omit-source-map-url sass/styles.sass public/css/styles.css",
+    "css-watch": "npm run css-build -- --watch",
+    "start": "npm run css-watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/YourBoyConnor/FBLA.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/YourBoyConnor/FBLA/issues"
+  },
+  "homepage": "https://github.com/YourBoyConnor/FBLA#readme",
+  "devDependencies": {
+    "bulma": "^0.8.0",
+    "leaflet": "^1.5.1"
+  },
+  "dependencies": {
+    "bulma-calendar": "^6.0.7",
+    "bulma-steps": "^2.2.1",
+    "node-sass": "^4.13.1"
+  }
+}

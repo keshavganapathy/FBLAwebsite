@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+<link rel="apple-touch-icon" sizes="57x57" href="images/apple-icon-57x57.png">
+<link rel="apple-touch-icon" sizes="60x60" href="images/apple-icon-60x60.png">
+<link rel="apple-touch-icon" sizes="72x72" href="images/apple-icon-72x72.png">
+<link rel="apple-touch-icon" sizes="76x76" href="images/apple-icon-76x76.png">
+<link rel="apple-touch-icon" sizes="114x114" href="images/apple-icon-114x114.png">
+<link rel="apple-touch-icon" sizes="120x120" href="images/apple-icon-120x120.png">
+<link rel="apple-touch-icon" sizes="144x144" href="images/apple-icon-144x144.png">
+<link rel="apple-touch-icon" sizes="152x152" href="images/apple-icon-152x152.png">
+<link rel="apple-touch-icon" sizes="180x180" href="images/apple-icon-180x180.png">
+<link rel="icon" type="image/png" sizes="192x192"  href="images/android-icon-192x192.png">
+<link rel="icon" type="image/png" sizes="32x32" href="images/favicon-32x32.png">
+<link rel="icon" type="image/png" sizes="96x96" href="images/favicon-96x96.png">
+<link rel="icon" type="image/png" sizes="16x16" href="images/favicon-16x16.png">
+<link rel="manifest" href="manifest.json">
+<meta name="msapplication-TileColor" content="#ffffff">
+<meta name="msapplication-TileImage" content="images/ms-icon-144x144.png">
+<meta name="theme-color" content="#ffffff">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Omega Airlines</title>
+  <link rel="stylesheet" href="css/styles.css">
+  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+
+<script src="/__/firebase/7.6.2/firebase-app.js"></script>
+<script src="/__/firebase/7.6.2/firebase-auth.js"></script>
+<script src="/__/firebase/7.6.2/firebase-firestore.js"></script>
+<script src="/__/firebase/init.js"></script>
+<script src="js/load.js"></script>
+</head>
+<body>
+  <nav class="navbar is-primary" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="/">
+        <img src="images/inline-brand.png" alt="Omega">
+      </a>
+
+      <a role="button" class="navbar-burger burger" aria-label="menu" aria-expanded="false" data-target="navbarMenu">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+    <div id="navbarMenu" class="navbar-menu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="book">
+          <i class="fas fa-book"></i>
+          <span>&nbspFlights</span>
+        </a>
+        <a class="navbar-item" href="trips">
+          <span class="icon"><i class="fas fa-plane"></i></span>
+          <span>&nbspMy Trips</span>
+        </a>
+        <a class="navbar-item is-active" href="frequent-fliers">
+          <span class="icon"><i class="fas fa-plane"></i></span>
+          <span>&nbspFrequent Fliers</span>
+        </a>
+        <a class="navbar-item" href="apply">
+          <span class="icon"><i class="fas fa-upload"></i></span>
+          <span>&nbspApply</span>
+        </a>
+
+      </div>
+      <div class="navbar-end">
+<div id="signed_out_buttons" class="navbar-item is-hidden">
+  <h2>
+    Hello, Friend!
+  </h2>&nbsp&nbsp
+  <p class="control">
+    <a id="sign_out" class="button is-palette-dull">
+      <span class="icon">
+        <i class="fas fa-key"></i>
+      </span>
+      <span>
+        Log Out
+      </span>
+    </a>
+  </p>
+</div>
+        <div id="signed_in_buttons" class="navbar-item is-hidden">
+          <div class="field is-grouped">
+            <p class="control">
+              <a class="bd-tw-button button" href="signup">
+                <span class="icon">
+                  <i class="fas fa-key"></i>
+                </span>
+                <span>
+                  Sign Up
+                </span>
+              </a>
+            </p>
+            <p class="control">
+              <a class="button is-palette-dull" href="signin">
+                <span class="icon">
+                  <i class="fas fa-key"></i>
+                </span>
+                <span>
+                  Log In
+                </span>
+              </a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </nav>
+  <section class="hero is-light is-large is-bold">
+    <section class="hero-body">
+      <h1 class="title strong content is-title">
+        Frequent Fliers
+      </h1>
+    </section>
+  </section>
+  <section class="section">
+        <div class="container">
+          <div class="tile is-ancestor">
+            <div class="tile is-parent">
+              <article class="tile is-child box is-dark">
+                <p class="title">In-Flight Services</p>
+                <p class="subtitle">Priority</p>
+                <div class="content">
+                  <p>Even before your flight, you will begin to reap the benefits due to your commitment to Omega. We provide Main Cabin Priority Boarding as a part of the frequent flyers program! You will receive complimentary in-flight wifi, television, and movies.</p>
+                </div>
+              </article>
+            </div>
+            <div class="tile is-parent">
+              <article class="tile is-child box is-dark">
+                <p class="title">In-Flight Amenities</p>
+                <p class="subtitle">Quality Care and Attention</p>
+                <div class="content">
+                  <p>In addition to your on-board features, stay comfortable with complimentary peanuts, drinks, and sleep masks from the on-flight Omega Team.</p>
+                </div>
+              </article>
+            </div>
+            <div class="tile is-parent">
+              <article class="tile is-child box is-dark">
+                <p class="title">Easy Check-In</p>
+                <div class="content">
+                  <p>As a part of the multitude of benefits, we want to make your flight experience as enjoyable as possible. Enjoy your first check-in bag 100% free, and 10% off all additional checked bags.</p>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <div class="tile is-ancestor">
+            <div class="tile is-parent">
+              <article class="tile is-child box is-dark">
+                <p class="title">Miles</p>
+                <div class="content">
+                  <p>When you join Omega Airlines, you can earn miles back on every flight. Join a family that will provide you the best comfort and amenities wherever your journey takes you. You get one mile per dollar spent, and your miles never expire! Choose the airline that is right for you. Choose Omega.</p>
+                </div>
+              </article>
+            </div>
+            <div class="tile is-parent">
+              <article class="tile is-child box is-dark">
+                <p class="title">What can you use your miles for?</p>
+                <div class="content">
+                  <p>Turn them into your next trip, or use them to receive many other rewards like a new tablet! Since miles don’t expire, there’s no limit to what you can do with them.</p>
+                </div>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+  <footer class="footer is-dark">
+  <div class="content has-text-centered is-dark">
+  <a href="https://www.instagram.com">
+    <span class="icon is-large has-text-primary">
+      <i class="fab fa-instagram fa-3x"></i>
+    </span>
+  </a>&nbsp;
+  <a href="https://www.twitter.com">
+    <span class="icon is-large has-text-primary">
+      <i class="fab fa-twitter fa-3x"></i>
+    </span>
+  </a>&nbsp;
+  <a href="https://www.facebook.com">
+    <span class="icon is-large has-text-primary">
+      <i class="fab fa-facebook fa-3x"></i>
+    </span></a>&nbsp;
+  <a href="mailto:customerservice@airomega.web.app">
+    <span class="icon is-large has-text-primary">
+      <i class="fas fa-envelope fa-3x"></i>
+    </span>
+  </a>
+    <p>
+      Omega Airlines by Connor Pymm, Adam Goldstein, and Keshav Ganapathy.
+</p>
+<p>
+<a href="credits">Credits</a>
+</p>
+
+    </p>
+  </div>
+</footer>
+</body>
+</html>
