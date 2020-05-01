@@ -1,2 +1,2 @@
 # FBLA
-AirOmega website
+AirOmega website. Team members: Adam Goldstein and Connor Pymm 
